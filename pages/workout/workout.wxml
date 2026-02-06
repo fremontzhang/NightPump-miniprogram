@@ -1,4 +1,265 @@
-<view class="container">
-  <text class="title">{{pageTitle}}</text>
-  <text>页面开发中...</text>
+<!--pages/workout/workout.wxml-->
+<view class="workout-container">
+  <!-- 标签切换 -->
+  <view class="tab-bar">
+    <view class="tab-item {{currentTab === 'plans' ? 'active' : ''}}"
+          bindtap="switchTab"
+          data-tab="plans">
+      训练计划
+    </view>
+    <view class="tab-item {{currentTab === 'history' ? 'active' : ''}}"
+          bindtap="switchTab"
+          data-tab="history">
+      训练历史
+    </view>
+  </view>
+
+  <!-- 训练计划页面 -->
+  <view class="tab-content" wx:if="{{currentTab === 'plans'}}">
+    <!-- 新建计划按钮 -->
+    <view class="create-btn" bindtap="showCreatePlan">
+      <text class="icon">+</text>
+      <text class="text">创建训练计划</text>
+    </view>
+
+    <!-- 计划列表 -->
+    <view class="plan-list">
+      <view class="plan-card"
+            wx:for="{{workoutPlans}}"
+            wx:key="_id">
+
+        <!-- 计划头部 -->
+        <view class="plan-header">
+          <text class="plan-name">{{item.name}}</text>
+          <view class="plan-actions">
+            <text class="action-btn delete-btn"
+                  bindtap="deletePlan"
+                  data-id="{{item._id}}"
+                  data-name="{{item.name}}">删除</text>
+          </view>
+        </view>
+
+        <!-- 计划详情 -->
+        <view class="plan-body">
+          <view class="exercise-item" wx:for="{{item.exercises}}" wx:key="index" wx:for-item="exercise">
+            <view class="exercise-info">
+              <text class="exercise-name">{{exercise.name}}</text>
+              <text class="exercise-detail">{{exercise.sets}}组 × {{exercise.reps}}次</text>
+              <text class="exercise-detail" wx:if="{{exercise.weight > 0}}">{{exercise.weight}}kg</text>
+            </view>
+          </view>
+        </view>
+
+        <!-- 开始训练按钮 -->
+        <view class="plan-footer">
+          <button class="start-btn"
+                  bindtap="startWorkout"
+                  data-plan="{{item}}">开始训练</button>
+        </view>
+      </view>
+
+      <!-- 空状态 -->
+      <view class="empty-state" wx:if="{{workoutPlans.length === 0}}">
+        <text class="empty-icon">💪</text>
+        <text class="empty-text">还没有训练计划</text>
+        <text class="empty-hint">点击上方按钮创建第一个计划</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 新建计划表单 -->
+  <view class="create-plan-modal" wx:if="{{isCreatingPlan}}">
+    <view class="modal-content">
+      <view class="modal-header">
+        <text class="modal-title">创建训练计划</text>
+        <text class="modal-close" bindtap="cancelCreatePlan">×</text>
+      </view>
+
+      <scroll-view class="modal-body" scroll-y>
+        <!-- 计划名称 -->
+        <view class="form-item">
+          <text class="form-label">计划名称</text>
+          <input class="form-input"
+                 placeholder="例如：胸肌训练"
+                 value="{{newPlan.name}}"
+                 bindinput="updatePlanName" />
+        </view>
+
+        <!-- 动作列表 -->
+        <view class="exercises-section">
+          <text class="section-title">训练动作</text>
+
+          <view class="exercise-form"
+                wx:for="{{newPlan.exercises}}"
+                wx:key="index">
+
+            <view class="exercise-form-header">
+              <text class="exercise-number">动作 {{index + 1}}</text>
+              <text class="exercise-delete"
+                    bindtap="deleteExercise"
+                    data-index="{{index}}"
+                    wx:if="{{newPlan.exercises.length > 1}}">删除</text>
+            </view>
+
+            <!-- 动作名称 -->
+            <view class="form-row">
+              <text class="field-label">动作名称</text>
+              <input class="form-input"
+                     placeholder="例如：卧推"
+                     value="{{item.name}}"
+                     bindinput="updateExercise"
+                     data-field="name"
+                     data-index="{{index}}" />
+            </view>
+
+            <!-- 组数、次数、重量 -->
+            <view class="form-row-group">
+              <view class="form-row-small">
+                <text class="field-label">组数</text>
+                <input class="form-input-small"
+                       type="number"
+                       value="{{item.sets}}"
+                       bindinput="updateExercise"
+                       data-field="sets"
+                       data-index="{{index}}" />
+              </view>
+
+              <view class="form-row-small">
+                <text class="field-label">次数</text>
+                <input class="form-input-small"
+                       type="number"
+                       value="{{item.reps}}"
+                       bindinput="updateExercise"
+                       data-field="reps"
+                       data-index="{{index}}" />
+              </view>
+
+              <view class="form-row-small">
+                <text class="field-label">重量(kg)</text>
+                <input class="form-input-small"
+                       type="digit"
+                       value="{{item.weight}}"
+                       bindinput="updateExercise"
+                       data-field="weight"
+                       data-index="{{index}}" />
+              </view>
+            </view>
+          </view>
+
+          <!-- 添加动作按钮 -->
+          <view class="add-exercise-btn" bindtap="addExercise">
+            <text class="add-icon">+</text>
+            <text class="add-text">添加动作</text>
+          </view>
+        </view>
+      </scroll-view>
+
+      <view class="modal-footer">
+        <button class="cancel-btn" bindtap="cancelCreatePlan">取消</button>
+        <button class="save-btn" bindtap="savePlan">保存</button>
+      </view>
+    </view>
+  </view>
+
+  <!-- 训练进行中页面 -->
+  <view class="workout-progress" wx:if="{{currentTab === 'workout' && currentWorkout}}">
+    <!-- 训练头部 -->
+    <view class="workout-header">
+      <view class="workout-info">
+        <text class="workout-plan-name">{{currentWorkout.planName}}</text>
+        <text class="workout-timer">{{formatDuration(workoutDuration)}}</text>
+      </view>
+      <button class="give-up-btn" bindtap="giveUpWorkout">放弃训练</button>
+    </view>
+
+    <!-- 当前动作 -->
+    <view class="current-exercise">
+      <view class="exercise-header">
+        <text class="exercise-index">动作 {{currentExerciseIndex + 1}}/{{currentWorkout.exercises.length}}</text>
+      </view>
+
+      <view class="exercise-content">
+        <text class="exercise-name">{{currentWorkout.exercises[currentExerciseIndex].name}}</text>
+        <view class="exercise-stats">
+          <text class="stat-item">
+            <text class="stat-label">组数</text>
+            <text class="stat-value">{{currentWorkout.exercises[currentExerciseIndex].completedSets}}/{{currentWorkout.exercises[currentExerciseIndex].sets}}</text>
+          </text>
+          <text class="stat-item">
+            <text class="stat-label">次数</text>
+            <text class="stat-value">{{currentWorkout.exercises[currentExerciseIndex].reps}}</text>
+          </text>
+          <text class="stat-item" wx:if="{{currentWorkout.exercises[currentExerciseIndex].weight > 0}}">
+            <text class="stat-label">重量</text>
+            <text class="stat-value">{{currentWorkout.exercises[currentExerciseIndex].weight}}kg</text>
+          </text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 完成组按钮 -->
+    <view class="complete-set-section">
+      <button class="complete-set-btn"
+              bindtap="completeSet"
+              data-exercise-index="{{currentExerciseIndex}}">
+        完成第 {{currentSetIndex + 1}} 组
+      </button>
+    </view>
+
+    <!-- 剩余动作预览 -->
+    <view class="remaining-exercises">
+      <text class="section-title">剩余动作</text>
+      <scroll-view class="exercises-list" scroll-y>
+        <view class="remaining-item"
+              wx:for="{{currentWorkout.exercises}}"
+              wx:key="index"
+              wx:if="{{index > currentExerciseIndex}}">
+          <text class="remaining-name">{{item.name}}</text>
+          <text class="remaining-detail">{{item.sets}}组 × {{item.reps}}次</text>
+        </view>
+      </scroll-view>
+    </view>
+  </view>
+
+  <!-- 训练历史页面 -->
+  <view class="tab-content" wx:if="{{currentTab === 'history'}}">
+    <!-- 统计卡片 -->
+    <view class="stats-cards">
+      <view class="stat-card">
+        <text class="stat-value">{{totalWorkouts}}</text>
+        <text class="stat-label">总训练次数</text>
+      </view>
+      <view class="stat-card">
+        <text class="stat-value">{{weekWorkouts}}</text>
+        <text class="stat-label">本周训练</text>
+      </view>
+    </view>
+
+    <!-- 历史记录列表 -->
+    <view class="history-list">
+      <view class="history-item"
+            wx:for="{{workoutHistory}}"
+            wx:key="_id"
+            bindtap="viewWorkoutDetail"
+            data-log="{{item}}">
+
+        <view class="history-header">
+          <text class="history-plan">{{item.planName}}</text>
+          <text class="history-date">{{item.startTime}}</text>
+        </view>
+
+        <view class="history-body">
+          <text class="history-duration">{{item.duration}}秒</text>
+          <text class="history-exercises">{{item.exercises.length}}个动作</text>
+        </view>
+      </view>
+
+      <!-- 空状态 -->
+      <view class="empty-state" wx:if="{{workoutHistory.length === 0}}">
+        <text class="empty-icon">📊</text>
+        <text class="empty-text">还没有训练记录</text>
+        <text class="empty-hint">开始第一次训练吧！</text>
+      </view>
+    </view>
+  </view>
 </view>

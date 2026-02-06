@@ -1,10 +1,548 @@
-.container {
-  padding: 32rpx;
-  text-align: center;
+/* pages/workout/workout.wxss */
+.workout-container {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #0A0E27 0%, #1A1F3A 100%);
+  padding-bottom: 120rpx;
 }
-.title {
+
+/* 标签栏 */
+.tab-bar {
+  display: flex;
+  background: #1E2542;
+  padding: 20rpx;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.3);
+}
+
+.tab-item {
+  flex: 1;
+  text-align: center;
+  padding: 24rpx;
+  color: #8B9BB4;
+  font-size: 32rpx;
+  border-radius: 12rpx;
+  transition: all 0.3s;
+}
+
+.tab-item.active {
+  background: #00D9FF;
+  color: #0A0E27;
+  font-weight: bold;
+}
+
+/* 内容区域 */
+.tab-content {
+  padding: 32rpx;
+}
+
+/* 创建按钮 */
+.create-btn {
+  background: linear-gradient(135deg, #00D9FF 0%, #00B8E0 100%);
+  border-radius: 16rpx;
+  padding: 32rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 32rpx;
+  box-shadow: 0 8rpx 24rpx rgba(0, 217, 255, 0.3);
+}
+
+.create-btn .icon {
   font-size: 48rpx;
+  color: #0A0E27;
+  margin-right: 16rpx;
+}
+
+.create-btn .text {
+  font-size: 32rpx;
+  color: #0A0E27;
+  font-weight: bold;
+}
+
+/* 计划卡片 */
+.plan-card {
+  background: #1E2542;
+  border-radius: 16rpx;
+  margin-bottom: 32rpx;
+  overflow: hidden;
+  box-shadow: 0 8rpx 24rpx rgba(0, 0, 0, 0.3);
+}
+
+.plan-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 32rpx;
+  border-bottom: 2rpx solid rgba(255, 255, 255, 0.1);
+}
+
+.plan-name {
+  font-size: 36rpx;
+  font-weight: bold;
   color: #00D9FF;
+}
+
+.action-btn {
+  padding: 12rpx 24rpx;
+  border-radius: 8rpx;
+  font-size: 28rpx;
+}
+
+.delete-btn {
+  background: rgba(255, 107, 53, 0.2);
+  color: #FF6B35;
+}
+
+.plan-body {
+  padding: 32rpx;
+}
+
+.exercise-item {
+  margin-bottom: 24rpx;
+}
+
+.exercise-info {
+  display: flex;
+  flex-direction: column;
+  gap: 8rpx;
+}
+
+.exercise-name {
+  font-size: 32rpx;
+  color: #FFFFFF;
+  font-weight: 500;
+}
+
+.exercise-detail {
+  font-size: 28rpx;
+  color: #8B9BB4;
+}
+
+.plan-footer {
+  padding: 24rpx 32rpx;
+  background: rgba(0, 217, 255, 0.05);
+}
+
+.start-btn {
+  background: linear-gradient(135deg, #FF6B35 0%, #FF8C5A 100%);
+  color: #FFFFFF;
+  border-radius: 12rpx;
+  height: 88rpx;
+  line-height: 88rpx;
+  font-size: 32rpx;
+  font-weight: bold;
+  box-shadow: 0 8rpx 24rpx rgba(255, 107, 53, 0.3);
+}
+
+/* 空状态 */
+.empty-state {
+  text-align: center;
+  padding: 120rpx 32rpx;
+}
+
+.empty-icon {
+  font-size: 120rpx;
   display: block;
   margin-bottom: 32rpx;
+}
+
+.empty-text {
+  font-size: 36rpx;
+  color: #FFFFFF;
+  display: block;
+  margin-bottom: 16rpx;
+}
+
+.empty-hint {
+  font-size: 28rpx;
+  color: #8B9BB4;
+  display: block;
+}
+
+/* 新建计划弹窗 */
+.create-plan-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.8);
+  z-index: 1000;
+  display: flex;
+  align-items: flex-end;
+}
+
+.modal-content {
+  background: #1E2542;
+  border-radius: 32rpx 32rpx 0 0;
+  width: 100%;
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 32rpx;
+  border-bottom: 2rpx solid rgba(255, 255, 255, 0.1);
+}
+
+.modal-title {
+  font-size: 36rpx;
+  font-weight: bold;
+  color: #FFFFFF;
+}
+
+.modal-close {
+  font-size: 64rpx;
+  color: #8B9BB4;
+  line-height: 1;
+}
+
+.modal-body {
+  flex: 1;
+  padding: 32rpx;
+  overflow-y: scroll;
+}
+
+.modal-footer {
+  display: flex;
+  gap: 24rpx;
+  padding: 32rpx;
+  border-top: 2rpx solid rgba(255, 255, 255, 0.1);
+}
+
+.cancel-btn,
+.save-btn {
+  flex: 1;
+  height: 88rpx;
+  line-height: 88rpx;
+  border-radius: 12rpx;
+  font-size: 32rpx;
+  font-weight: bold;
+}
+
+.cancel-btn {
+  background: rgba(255, 255, 255, 0.1);
+  color: #FFFFFF;
+}
+
+.save-btn {
+  background: linear-gradient(135deg, #00D9FF 0%, #00B8E0 100%);
+  color: #0A0E27;
+}
+
+/* 表单样式 */
+.form-item {
+  margin-bottom: 32rpx;
+}
+
+.form-label {
+  display: block;
+  font-size: 28rpx;
+  color: #8B9BB4;
+  margin-bottom: 16rpx;
+}
+
+.form-input {
+  width: 100%;
+  background: rgba(255, 255, 255, 0.05);
+  border: 2rpx solid rgba(255, 255, 255, 0.1);
+  border-radius: 12rpx;
+  padding: 24rpx;
+  font-size: 32rpx;
+  color: #FFFFFF;
+}
+
+.section-title {
+  font-size: 32rpx;
+  color: #FFFFFF;
+  font-weight: bold;
+  display: block;
+  margin-bottom: 24rpx;
+}
+
+.exercise-form {
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 16rpx;
+  padding: 24rpx;
+  margin-bottom: 24rpx;
+}
+
+.exercise-form-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24rpx;
+}
+
+.exercise-number {
+  font-size: 28rpx;
+  color: #00D9FF;
+  font-weight: bold;
+}
+
+.exercise-delete {
+  font-size: 24rpx;
+  color: #FF6B35;
+}
+
+.form-row {
+  margin-bottom: 24rpx;
+}
+
+.field-label {
+  display: block;
+  font-size: 26rpx;
+  color: #8B9BB4;
+  margin-bottom: 12rpx;
+}
+
+.form-row-group {
+  display: flex;
+  gap: 16rpx;
+}
+
+.form-row-small {
+  flex: 1;
+}
+
+.form-input-small {
+  width: 100%;
+  background: rgba(255, 255, 255, 0.05);
+  border: 2rpx solid rgba(255, 255, 255, 0.1);
+  border-radius: 8rpx;
+  padding: 20rpx;
+  font-size: 28rpx;
+  color: #FFFFFF;
+  text-align: center;
+}
+
+.add-exercise-btn {
+  background: rgba(0, 217, 255, 0.1);
+  border: 2rpx dashed #00D9FF;
+  border-radius: 12rpx;
+  padding: 32rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16rpx;
+}
+
+.add-icon {
+  font-size: 40rpx;
+  color: #00D9FF;
+}
+
+.add-text {
+  font-size: 28rpx;
+  color: #00D9FF;
+}
+
+/* 训练进行中 */
+.workout-progress {
+  padding: 32rpx;
+}
+
+.workout-header {
+  background: #1E2542;
+  border-radius: 16rpx;
+  padding: 32rpx;
+  margin-bottom: 32rpx;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.workout-plan-name {
+  font-size: 36rpx;
+  font-weight: bold;
+  color: #00D9FF;
+  display: block;
+  margin-bottom: 16rpx;
+}
+
+.workout-timer {
+  font-size: 48rpx;
+  font-weight: bold;
+  color: #FFFFFF;
+  font-family: monospace;
+}
+
+.give-up-btn {
+  background: rgba(255, 107, 53, 0.2);
+  color: #FF6B35;
+  border-radius: 8rpx;
+  padding: 16rpx 24rpx;
+  font-size: 24rpx;
+}
+
+.current-exercise {
+  background: linear-gradient(135deg, #1E2542 0%, #252D52 100%);
+  border-radius: 16rpx;
+  padding: 48rpx;
+  margin-bottom: 32rpx;
+  text-align: center;
+  box-shadow: 0 8rpx 24rpx rgba(0, 217, 255, 0.2);
+}
+
+.exercise-header {
+  margin-bottom: 32rpx;
+}
+
+.exercise-index {
+  font-size: 28rpx;
+  color: #8B9BB4;
+}
+
+.current-exercise .exercise-name {
+  font-size: 48rpx;
+  font-weight: bold;
+  color: #FFFFFF;
+  display: block;
+  margin-bottom: 32rpx;
+}
+
+.exercise-stats {
+  display: flex;
+  justify-content: center;
+  gap: 48rpx;
+}
+
+.stat-item {
+  display: flex;
+  flex-direction: column;
+  gap: 8rpx;
+}
+
+.stat-label {
+  font-size: 24rpx;
+  color: #8B9BB4;
+}
+
+.stat-value {
+  font-size: 36rpx;
+  font-weight: bold;
+  color: #00D9FF;
+}
+
+.complete-set-section {
+  margin-bottom: 32rpx;
+}
+
+.complete-set-btn {
+  background: linear-gradient(135deg, #00D9FF 0%, #00B8E0 100%);
+  color: #0A0E27;
+  border-radius: 16rpx;
+  height: 120rpx;
+  line-height: 120rpx;
+  font-size: 36rpx;
+  font-weight: bold;
+  box-shadow: 0 12rpx 32rpx rgba(0, 217, 255, 0.4);
+}
+
+.remaining-exercises {
+  background: #1E2542;
+  border-radius: 16rpx;
+  padding: 32rpx;
+}
+
+.exercises-list {
+  max-height: 400rpx;
+}
+
+.remaining-item {
+  display: flex;
+  justify-content: space-between;
+  padding: 24rpx;
+  border-bottom: 2rpx solid rgba(255, 255, 255, 0.05);
+}
+
+.remaining-item:last-child {
+  border-bottom: none;
+}
+
+.remaining-name {
+  font-size: 32rpx;
+  color: #FFFFFF;
+}
+
+.remaining-detail {
+  font-size: 28rpx;
+  color: #8B9BB4;
+}
+
+/* 统计卡片 */
+.stats-cards {
+  display: flex;
+  gap: 24rpx;
+  margin-bottom: 32rpx;
+}
+
+.stat-card {
+  flex: 1;
+  background: #1E2542;
+  border-radius: 16rpx;
+  padding: 32rpx;
+  text-align: center;
+  box-shadow: 0 8rpx 24rpx rgba(0, 0, 0, 0.3);
+}
+
+.stat-card .stat-value {
+  font-size: 48rpx;
+  font-weight: bold;
+  color: #00D9FF;
+  display: block;
+  margin-bottom: 16rpx;
+}
+
+.stat-card .stat-label {
+  font-size: 26rpx;
+  color: #8B9BB4;
+}
+
+/* 历史记录列表 */
+.history-list {
+  padding: 0 32rpx;
+}
+
+.history-item {
+  background: #1E2542;
+  border-radius: 16rpx;
+  padding: 32rpx;
+  margin-bottom: 24rpx;
+  box-shadow: 0 8rpx 24rpx rgba(0, 0, 0, 0.3);
+}
+
+.history-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16rpx;
+}
+
+.history-plan {
+  font-size: 32rpx;
+  font-weight: bold;
+  color: #FFFFFF;
+}
+
+.history-date {
+  font-size: 24rpx;
+  color: #8B9BB4;
+}
+
+.history-body {
+  display: flex;
+  gap: 24rpx;
+}
+
+.history-duration,
+.history-exercises {
+  font-size: 26rpx;
+  color: #8B9BB4;
 }

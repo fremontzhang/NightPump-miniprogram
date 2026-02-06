@@ -1,4 +1,287 @@
-<view class="container">
-  <text class="title">{{pageTitle}}</text>
-  <text>页面开发中...</text>
+<!--pages/bodydata/bodydata.wxml-->
+<view class="bodydata-container">
+  <!-- 标签切换 -->
+  <view class="tab-bar">
+    <view class="tab-item {{currentTab === 'overview' ? 'active' : ''}}"
+          bindtap="switchTab"
+          data-tab="overview">
+      概览
+    </view>
+    <view class="tab-item {{currentTab === 'history' ? 'active' : ''}}"
+          bindtap="switchTab"
+          data-tab="history">
+      历史
+    </view>
+  </view>
+
+  <!-- 概览页面 -->
+  <view class="tab-content" wx:if="{{currentTab === 'overview'}}">
+    <!-- 添加数据按钮 -->
+    <view class="add-btn" bindtap="showAddForm">
+      <text class="icon">+</text>
+      <text class="text">记录身体数据</text>
+    </view>
+
+    <!-- 最新数据卡片 -->
+    <view class="latest-data-card" wx:if="{{latestData}}">
+      <view class="card-header">
+        <text class="card-title">最新数据</text>
+        <text class="card-date">{{latestData.date}}</text>
+      </view>
+
+      <view class="data-grid">
+        <!-- 体重 -->
+        <view class="data-item">
+          <text class="data-label">体重</text>
+          <text class="data-value">{{latestData.weight || '--'}} kg</text>
+        </view>
+
+        <!-- BMI -->
+        <view class="data-item">
+          <text class="data-label">BMI</text>
+          <text class="data-value"
+                style="color: {{getBMIStatusColor(calculateBMI(latestData.weight, latestData.height))}}">
+            {{calculateBMI(latestData.weight, latestData.height) || '--'}}
+          </text>
+        </view>
+
+        <!-- 体脂率 -->
+        <view class="data-item">
+          <text class="data-label">体脂率</text>
+          <text class="data-value">{{latestData.bodyFatRate || '--'}}%</text>
+        </view>
+
+        <!-- 身高 -->
+        <view class="data-item">
+          <text class="data-label">身高</text>
+          <text class="data-value">{{latestData.height || '--'}} cm</text>
+        </view>
+      </view>
+
+      <!-- 围度数据 -->
+      <view class="measurements-section" wx:if="{{latestData.measurements}}">
+        <text class="section-title">围度数据</text>
+        <view class="measurements-grid">
+          <view class="measurement-item">
+            <text class="measurement-label">胸围</text>
+            <text class="measurement-value">{{formatMeasurement(latestData.measurements.chest)}}</text>
+          </view>
+          <view class="measurement-item">
+            <text class="measurement-label">腰围</text>
+            <text class="measurement-value">{{formatMeasurement(latestData.measurements.waist)}}</text>
+          </view>
+          <view class="measurement-item">
+            <text class="measurement-label">臀围</text>
+            <text class="measurement-value">{{formatMeasurement(latestData.measurements.hip)}}</text>
+          </view>
+          <view class="measurement-item">
+            <text class="measurement-label">大腿围</text>
+            <text class="measurement-value">{{formatMeasurement(latestData.measurements.thigh)}}</text>
+          </view>
+          <view class="measurement-item">
+            <text class="measurement-label">臂围</text>
+            <text class="measurement-value">{{formatMeasurement(latestData.measurements.arm)}}</text>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 统计卡片 -->
+    <view class="stats-card">
+      <view class="stat-item">
+        <text class="stat-value">{{totalRecords}}</text>
+        <text class="stat-label">总记录数</text>
+      </view>
+      <view class="stat-item" wx:if="{{weightChange !== 0}}">
+        <text class="stat-value {{weightChange > 0 ? 'increase' : 'decrease'}}">
+          {{weightChange > 0 ? '+' : ''}}{{weightChange.toFixed(1)}}
+        </text>
+        <text class="stat-label">体重变化(kg)</text>
+      </view>
+    </view>
+
+    <!-- 空状态 -->
+    <view class="empty-state" wx:if="{{!latestData}}">
+      <text class="empty-icon">📊</text>
+      <text class="empty-text">还没有身体数据</text>
+      <text class="empty-hint">点击上方按钮记录第一次数据</text>
+    </view>
+  </view>
+
+  <!-- 历史记录页面 -->
+  <view class="tab-content" wx:if="{{currentTab === 'history'}}">
+    <view class="history-list">
+      <view class="history-item"
+            wx:for="{{historyList}}"
+            wx:key="_id">
+
+        <view class="history-header">
+          <text class="history-date">{{item.date}}</text>
+          <text class="history-delete"
+                bindtap="deleteRecord"
+                data-id="{{item._id}}"
+                data-date="{{item.date}}">删除</text>
+        </view>
+
+        <view class="history-body">
+          <view class="history-data-row">
+            <text class="history-label">体重</text>
+            <text class="history-value">{{item.weight || '--'}} kg</text>
+          </view>
+          <view class="history-data-row">
+            <text class="history-label">BMI</text>
+            <text class="history-value">{{calculateBMI(item.weight, item.height) || '--'}}</text>
+          </view>
+          <view class="history-data-row">
+            <text class="history-label">体脂率</text>
+            <text class="history-value">{{item.bodyFatRate || '--'}}%</text>
+          </view>
+
+          <!-- 围度数据 -->
+          <view class="history-measurements" wx:if="{{item.measurements}}">
+            <view class="measurement-tag" wx:if="{{item.measurements.chest}}">
+              胸 {{item.measurements.chest}}
+            </view>
+            <view class="measurement-tag" wx:if="{{item.measurements.waist}}">
+              腰 {{item.measurements.waist}}
+            </view>
+            <view class="measurement-tag" wx:if="{{item.measurements.hip}}">
+              臀 {{item.measurements.hip}}
+            </view>
+            <view class="measurement-tag" wx:if="{{item.measurements.thigh}}">
+              大腿 {{item.measurements.thigh}}
+            </view>
+            <view class="measurement-tag" wx:if="{{item.measurements.arm}}">
+              臂 {{item.measurements.arm}}
+            </view>
+          </view>
+        </view>
+      </view>
+
+      <!-- 空状态 -->
+      <view class="empty-state" wx:if="{{historyList.length === 0}}">
+        <text class="empty-icon">📋</text>
+        <text class="empty-text">还没有历史记录</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 新增数据表单 -->
+  <view class="add-form-modal" wx:if="{{isAdding}}">
+    <view class="modal-content">
+      <view class="modal-header">
+        <text class="modal-title">记录身体数据</text>
+        <text class="modal-close" bindtap="cancelAdd">×</text>
+      </view>
+
+      <scroll-view class="modal-body" scroll-y>
+        <!-- 日期选择 -->
+        <view class="form-item">
+          <text class="form-label">日期</text>
+          <picker mode="date"
+                  value="{{formData.date}}"
+                  bindchange="bindDateChange">
+            <view class="picker-view">
+              <text class="picker-text">{{formData.date || '选择日期'}}</text>
+            </view>
+          </picker>
+        </view>
+
+        <!-- 基本信息 -->
+        <view class="form-section">
+          <text class="section-title">基本信息</text>
+
+          <view class="form-row">
+            <text class="field-label">体重 (kg)</text>
+            <input class="form-input"
+                   type="digit"
+                   placeholder="输入体重"
+                   value="{{formData.weight}}"
+                   bindinput="updateFormData"
+                   data-field="weight" />
+          </view>
+
+          <view class="form-row">
+            <text class="field-label">身高 (cm)</text>
+            <input class="form-input"
+                   type="digit"
+                   placeholder="输入身高"
+               value="{{formData.height}}"
+               bindinput="updateFormData"
+               data-field="height" />
+          </view>
+
+          <view class="form-row">
+            <text class="field-label">体脂率 (%)</text>
+            <input class="form-input"
+                   type="digit"
+                   placeholder="输入体脂率"
+                   value="{{formData.bodyFatRate}}"
+                   bindinput="updateFormData"
+                   data-field="bodyFatRate" />
+          </view>
+        </view>
+
+        <!-- 围度数据 -->
+        <view class="form-section">
+          <text class="section-title">围度数据 (cm)</text>
+
+          <view class="form-row">
+            <text class="field-label">胸围</text>
+            <input class="form-input"
+                   type="digit"
+                   placeholder="输入胸围"
+                   value="{{formData.chest}}"
+                   bindinput="updateFormData"
+                   data-field="chest" />
+          </view>
+
+          <view class="form-row">
+            <text class="field-label">腰围</text>
+            <input class="form-input"
+                   type="digit"
+                   placeholder="输入腰围"
+                   value="{{formData.waist}}"
+                   bindinput="updateFormData"
+                   data-field="waist" />
+          </view>
+
+          <view class="form-row">
+            <text class="field-label">臀围</text>
+            <input class="form-input"
+                   type="digit"
+                   placeholder="输入臀围"
+                   value="{{formData.hip}}"
+                   bindinput="updateFormData"
+                   data-field="hip" />
+          </view>
+
+          <view class="form-row">
+            <text class="field-label">大腿围</text>
+            <input class="form-input"
+                   type="digit"
+                   placeholder="输入大腿围"
+                   value="{{formData.thigh}}"
+                   bindinput="updateFormData"
+                   data-field="thigh" />
+          </view>
+
+          <view class="form-row">
+            <text class="field-label">臂围</text>
+            <input class="form-input"
+                   type="digit"
+                   placeholder="输入臂围"
+                   value="{{formData.arm}}"
+                   bindinput="updateFormData"
+                   data-field="arm" />
+          </view>
+        </view>
+      </scroll-view>
+
+      <view class="modal-footer">
+        <button class="cancel-btn" bindtap="cancelAdd">取消</button>
+        <button class="save-btn" bindtap="saveData">保存</button>
+      </view>
+    </view>
+  </view>
 </view>
