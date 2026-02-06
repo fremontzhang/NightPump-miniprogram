@@ -1,0 +1,10 @@
+.container {
+  padding: 32rpx;
+  text-align: center;
+}
+.title {
+  font-size: 48rpx;
+  color: #00D9FF;
+  display: block;
+  margin-bottom: 32rpx;
+}

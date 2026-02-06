@@ -1,0 +1,72 @@
+<!--pages/index/index.wxml-->
+<view class="container">
+  <view class="header">
+    <text class="title">NightPump</text>
+    <text class="subtitle">晚上10点，开始锻炼</text>
+  </view>
+
+  <view class="stats-section">
+    <view class="stat-card">
+      <text class="stat-value">{{stats.totalWorkouts}}</text>
+      <text class="stat-label">总训练次数</text>
+    </view>
+    <view class="stat-card">
+      <text class="stat-value">{{stats.weekWorkouts}}</text>
+      <text class="stat-label">本周训练</text>
+    </view>
+    <view class="stat-card">
+      <text class="stat-value">{{stats.totalDuration}}</text>
+      <text class="stat-label">总时长(分钟)</text>
+    </view>
+  </view>
+
+  <view class="quick-actions">
+    <button class="action-btn primary" bindtap="startWorkout">
+      <text>开始训练</text>
+    </button>
+    <button class="action-btn secondary" bindtap="addBodyData">
+      <text>记录数据</text>
+    </button>
+  </view>
+
+  <view class="recent-section">
+    <view class="section-header">
+      <text class="section-title">最近记录</text>
+      <text class="more" bindtap="viewMore">更多 ></text>
+    </view>
+    <view class="recent-list">
+      <block wx:if="{{recentLogs.length > 0}}">
+        <view class="log-item" wx:for="{{recentLogs}}" wx:key="_id">
+          <view class="log-info">
+            <text class="log-name">{{item.planName}}</text>
+            <text class="log-date">{{item.date}}</text>
+          </view>
+          <text class="log-duration">{{item.duration}}分钟</text>
+        </view>
+      </block>
+      <view wx:else class="empty">
+        <text>暂无训练记录</text>
+      </view>
+    </view>
+  </view>
+
+  <view class="latest-body-data" wx:if="{{latestBodyData}}">
+    <view class="section-header">
+      <text class="section-title">最新身体数据</text>
+    </view>
+    <view class="body-data-grid">
+      <view class="data-item">
+        <text class="data-label">体重</text>
+        <text class="data-value">{{latestBodyData.weight}} kg</text>
+      </view>
+      <view class="data-item">
+        <text class="data-label">体脂率</text>
+        <text class="data-value">{{latestBodyData.bodyFat}}%</text>
+      </view>
+      <view class="data-item">
+        <text class="data-label">BMI</text>
+        <text class="data-value">{{latestBodyData.bmi}}</text>
+      </view>
+    </view>
+  </view>
+</view>

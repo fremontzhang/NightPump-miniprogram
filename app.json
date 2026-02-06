@@ -1,0 +1,53 @@
+{
+  "pages": [
+    "pages/index/index",
+    "pages/workout/workout",
+    "pages/bodydata/bodydata",
+    "pages/statistics/statistics",
+    "pages/reminder/reminder",
+    "pages/profile/profile"
+  ],
+  "window": {
+    "backgroundTextStyle": "light",
+    "navigationBarBackgroundColor": "#0A0E27",
+    "navigationBarTitleText": "NightPump",
+    "navigationBarTextStyle": "white",
+    "backgroundColor": "#0A0E27",
+    "enablePullDownRefresh": false
+  },
+  "tabBar": {
+    "color": "#666666",
+    "selectedColor": "#00D9FF",
+    "backgroundColor": "#1E2542",
+    "borderStyle": "white",
+    "list": [
+      {
+        "pagePath": "pages/index/index",
+        "text": "首页",
+        "iconPath": "images/home.png",
+        "selectedIconPath": "images/home-active.png"
+      },
+      {
+        "pagePath": "pages/workout/workout",
+        "text": "训练",
+        "iconPath": "images/workout.png",
+        "selectedIconPath": "images/workout-active.png"
+      },
+      {
+        "pagePath": "pages/bodydata/bodydata",
+        "text": "数据",
+        "iconPath": "images/data.png",
+        "selectedIconPath": "images/data-active.png"
+      },
+      {
+        "pagePath": "pages/profile/profile",
+        "text": "我的",
+        "iconPath": "images/profile.png",
+        "selectedIconPath": "images/profile-active.png"
+      }
+    ]
+  },
+  "style": "v2",
+  "sitemapLocation": "sitemap.json",
+  "lazyCodeLoading": "requiredComponents"
+}

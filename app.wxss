@@ -1,0 +1,66 @@
+/**app.wxss**/
+page {
+  background-color: #0A0E27;
+  color: #FFFFFF;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+}
+
+.container {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* 通用样式 */
+.text-primary {
+  color: #00D9FF;
+}
+
+.text-secondary {
+  color: #FF6B35;
+}
+
+.text-dark {
+  color: #0A0E27;
+}
+
+.bg-dark {
+  background-color: #0A0E27;
+}
+
+.bg-card {
+  background-color: #1E2542;
+}
+
+.card {
+  background-color: #1E2542;
+  border-radius: 12rpx;
+  padding: 32rpx;
+  margin-bottom: 24rpx;
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, #00D9FF 0%, #00B8E6 100%);
+  color: #0A0E27;
+  border-radius: 12rpx;
+  padding: 24rpx 48rpx;
+  font-weight: bold;
+  border: none;
+}
+
+.btn-secondary {
+  background: linear-gradient(135deg, #FF6B35 0%, #FF8C5A 100%);
+  color: #FFFFFF;
+  border-radius: 12rpx;
+  padding: 24rpx 48rpx;
+  font-weight: bold;
+  border: none;
+}
+
+.input {
+  background-color: #0A0E27;
+  border: 2rpx solid #2A3F5F;
+  color: #FFFFFF;
+  border-radius: 8rpx;
+  padding: 24rpx;
+}

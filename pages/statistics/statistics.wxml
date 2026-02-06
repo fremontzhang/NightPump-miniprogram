@@ -1,0 +1,4 @@
+<view class="container">
+  <text class="title">{{pageTitle}}</text>
+  <text>页面开发中...</text>
+</view>
