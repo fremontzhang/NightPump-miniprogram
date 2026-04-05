@@ -1,0 +1,41 @@
+name: Code Quality Check
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+
+    - name: Install dependencies
+      run: |
+        if [ -f package.json ]; then
+          npm ci
+        fi
+
+    - name: Run ESLint
+      run: |
+        if [ -f .eslintrc.js ] || [ -f eslint.config.js ]; then
+          npm run lint || npx eslint . --ext .js
+        fi
+      continue-on-error: true
+
+    - name: Check for sensitive data
+      run: |
+        # 检查是否包含敏感信息
+        if grep -r "wx[a-f0-9]\{16,18\}" --include="*.js" --include="*.json" . 2>/dev/null | grep -v node_modules; then
+          echo "⚠️ 发现可能的敏感信息（AppID格式）"
+          exit 1
+        fi
+        echo "✅ 敏感信息检查通过"

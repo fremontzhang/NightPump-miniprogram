@@ -203,6 +203,106 @@ A: 在微信开发者工具顶部选择不同的设备模拟器
 - [云开发文档](https://developers.weixin.qq.com/miniprogram/dev/wxcloud/basis/getting-started.html)
 - [VS Code 微信小程序开发指南](https://developers.weixin.qq.com/miniprogram/dev/ide/vscode.html)
 
+## 📦 GitHub 同步规范
+
+### 分支策略（推荐）
+
+```
+main      ← 稳定版本，可发布
+  ↑
+develop   ← 开发分支，日常开发
+  ↑
+feature/* ← 功能分支，具体功能开发
+```
+
+### Commit Message 规范
+
+格式：`类型: 描述`
+
+| 类型 | 用途 | 示例 |
+|------|------|------|
+| `feat` | 新功能 | `feat: 添加训练计划创建功能` |
+| `fix` | Bug修复 | `fix: 修复页面跳转失败问题` |
+| `docs` | 文档更新 | `docs: 更新README说明` |
+| `style` | 代码格式 | `style: 格式化代码缩进` |
+| `refactor` | 重构 | `refactor: 优化数据查询逻辑` |
+| `perf` | 性能优化 | `perf: 减少云数据库调用次数` |
+| `test` | 测试相关 | `test: 添加单元测试` |
+
+### 敏感信息保护
+
+**不要提交到 GitHub 的文件：**
+
+- `project.private.config.json` - 包含小程序 AppID
+- `.env` / `.env.local` - 环境变量
+- 云开发环境 ID（虽然可以提交，但建议通过环境变量配置）
+
+**检查清单：**
+- [ ] 提交前运行 `git status` 查看要提交的文件
+- [ ] 确保没有包含敏感信息的文件
+- [ ] 代码中没有硬编码的密钥或密码
+
+### 完整的开发提交流程
+
+```bash
+# 1. 确保在最新代码基础上开发
+git checkout main
+git pull origin main
+
+# 2. 创建功能分支
+git checkout -b feature/训练记录页面
+
+# 3. 开发完成后，查看修改
+git status
+git diff
+
+# 4. 提交代码（使用规范的 commit message）
+git add .
+git commit -m "feat: 实现训练记录页面
+
+- 添加训练记录列表展示
+- 实现记录详情页面
+- 集成云数据库查询"
+
+# 5. 推送到 GitHub
+git push origin feature/训练记录页面
+
+# 6. 在 GitHub 上创建 Pull Request
+# - 使用 .github/PULL_REQUEST_TEMPLATE.md 模板
+# - 填写变更描述
+# - 请求代码审查
+
+# 7. 合并后，本地更新
+git checkout main
+git pull origin main
+git branch -d feature/训练记录页面  # 删除本地分支
+```
+
+### 日常同步命令
+
+```bash
+# 查看当前状态
+git status
+
+# 查看提交历史
+git log --oneline -10
+
+# 拉取最新代码（从 GitHub）
+git pull origin main
+
+# 推送本地代码（到 GitHub）
+git push origin main
+
+# 撤销上次提交（保留修改）
+git reset --soft HEAD~1
+
+# 查看分支列表
+git branch -a
+
+# 切换到其他分支
+git checkout 分支名
+```
+
 ## 🎉 开始开发
 
 现在你可以：
@@ -210,6 +310,7 @@ A: 在微信开发者工具顶部选择不同的设备模拟器
 1. 用 VS Code 或其他编辑器打开项目
 2. 开始编辑代码
 3. 在微信开发者工具中实时预览
-4. 开发完成后上传审核
+4. **定期提交代码到 GitHub 备份**
+5. 开发完成后上传审核
 
 祝你开发愉快！💪
