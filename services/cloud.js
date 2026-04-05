@@ -17,10 +17,9 @@ const CloudService = {
         query = query.orderBy(options.orderBy, options.order || 'desc');
       }
 
-      // 限制数量
-      if (options.limit) {
-        query = query.limit(options.limit);
-      }
+      // 限制数量 - 默认限制20条防止超额
+      const limit = options.limit || 20;
+      query = query.limit(Math.min(limit, 100)); // 最大100条
 
       const result = await query.get();
       return result.data;
